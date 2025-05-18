@@ -328,26 +328,31 @@ bool TsdfServer::getNextPointcloudFromQueue(
     sensor_msgs::PointCloud2::Ptr* pointcloud_msg, Transformation* T_G_C) {
   const size_t kMaxQueueSize = 10;
   if (queue->empty()) {
+    ROS_WARN("Pointcloud queue is empty!");
     return false;
   }
   *pointcloud_msg = queue->front();
-  if (transformer_.lookupTransform((*pointcloud_msg)->header.frame_id,
-                                   world_frame_,
-                                   (*pointcloud_msg)->header.stamp, T_G_C)) {
-    queue->pop();
-    return true;
-  } else {
-    if (queue->size() >= kMaxQueueSize) {
-      ROS_ERROR_THROTTLE(60,
-                         "Input pointcloud queue getting too long! Dropping "
-                         "some pointclouds. Either unable to look up transform "
-                         "timestamps or the processing is taking too long.");
-      while (queue->size() >= kMaxQueueSize) {
-        queue->pop();
-      }
-    }
-  }
-  return false;
+  ROS_INFO_THRROTLE(60, "Processing pointcloud size: %lu",
+                    (*pointcloud_msg)->data.size());
+  // if (transformer_.lookupTransform((*pointcloud_msg)->header.frame_id,
+  //                                  world_frame_,
+  //                                  (*pointcloud_msg)->header.stamp, T_G_C)) {
+  //   queue->pop();
+  //   return true;
+  // } else {
+  //   if (queue->size() >= kMaxQueueSize) {
+  //     ROS_ERROR_THROTTLE(60,
+  //                        "Input pointcloud queue getting too long! Dropping "
+  //                        "some pointclouds. Either unable to look up transform "
+  //                        "timestamps or the processing is taking too long.");
+  //     while (queue->size() >= kMaxQueueSize) {
+  //       queue->pop();
+  //     }
+  //   }
+  // }
+  // return false;
+  queue->pop();
+  return true;
 }
 
 void TsdfServer::insertPointcloud(
