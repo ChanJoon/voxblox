@@ -332,7 +332,7 @@ bool TsdfServer::getNextPointcloudFromQueue(
     return false;
   }
   *pointcloud_msg = queue->front();
-  ROS_INFO_THRROTLE(60, "Processing pointcloud size: %lu",
+  ROS_INFO_THROTTLE(60, "Processing pointcloud size: %lu",
                     (*pointcloud_msg)->data.size());
   // if (transformer_.lookupTransform((*pointcloud_msg)->header.frame_id,
   //                                  world_frame_,
